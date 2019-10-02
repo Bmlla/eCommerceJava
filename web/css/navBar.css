@@ -1,0 +1,22 @@
+.btn {
+  border: none;
+  outline: none;
+  padding: 10px 16px;
+  background-color: black;
+  cursor: pointer;
+  font-size: 18px;
+  color: white;
+}
+
+.active{
+    background-color: darkgreen;
+}
+
+/* Style the active class, and buttons on mouse-over */
+.btn:hover {
+  background-color: lightgreen;
+}
+
+.navBar{
+    background-color: #000;
+}

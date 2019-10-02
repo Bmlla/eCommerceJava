@@ -6,13 +6,16 @@ package Servlets;
  * and open the template in the editor.
  */
 
+import ClassesNegocio.Item;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -43,6 +46,67 @@ public class Carrinho extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+
+        String acaoParametro = request.getParameter("action");     
+        HttpSession session = request.getSession();
+        
+        int idProduto = Integer.parseInt(request.getParameter("id"));
+        
+        if(acaoParametro.equals("Adicionar")){
+            
+            ArrayList<Item> listaProdutos = (ArrayList<Item>)session.getAttribute("ListaProdutos");
+            ArrayList<Item> listaProdutosCarrinho = new ArrayList<Item>();
+            Item produto = listaProdutos.get(idProduto);
+            
+            if (session.getAttribute("Carrinho") == null ) {
+                listaProdutosCarrinho.add(listaProdutos.get(idProduto));
+                session.setAttribute("Carrinho", listaProdutosCarrinho);
+            }else{
+                listaProdutosCarrinho = (ArrayList<Item>)session.getAttribute("Carrinho");
+                
+                if(!listaProdutosCarrinho.contains(produto))
+                    listaProdutosCarrinho.add(produto);
+            }
+            request.setAttribute("Carrinho", listaProdutosCarrinho);
+        }
+        
+        
+        if(acaoParametro.equals("Alterar")){
+            ArrayList<String> quantidadeProduto = new ArrayList<String>();
+            String quantidade = request.getParameter("qtd");
+            
+            if (session.getAttribute("QuantidadeProduto") == null ) 
+            {
+                quantidadeProduto.add(quantidade);
+                session.setAttribute("QuantidadeProduto", quantidadeProduto);
+            }else{
+                quantidadeProduto = (ArrayList<String>)session.getAttribute("QuantidadeProduto");
+                quantidadeProduto.set(idProduto, quantidade);
+            }
+            
+            request.setAttribute("QuantidadeProduto", quantidadeProduto);
+        }
+        
+        
+        if(acaoParametro.equals("Excluir")){
+            
+            ArrayList<String> quantidadeProduto = (ArrayList<String>)session.getAttribute("QuantidadeProduto");
+            
+            if(quantidadeProduto != null && quantidadeProduto.get(idProduto) != null)
+                quantidadeProduto.remove(idProduto);
+            
+            ArrayList<Item> listaProdutosCarrinho = (ArrayList<Item>)session.getAttribute("Carrinho");
+            listaProdutosCarrinho.remove(idProduto);
+            
+            
+            session.setAttribute("Carrinho", listaProdutosCarrinho);
+            session.setAttribute("QuantidadeProduto", quantidadeProduto);
+            
+            request.setAttribute("Carrinho", listaProdutosCarrinho);
+            request.setAttribute("QuantidadeProduto", quantidadeProduto);
+            
+        }
+                
         request.getRequestDispatcher("/Carrinho.jsp").forward(request, response);
     }
 

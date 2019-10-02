@@ -15,6 +15,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -47,17 +48,27 @@ public class Produto extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
+        HttpSession session = request.getSession();
+        
         ArrayList<Item> itensDisponiveis = new ArrayList<Item>();
-        itensDisponiveis.add(new Item("Jony","","caixas"));
-        itensDisponiveis.add(new Item("Elieser","","unidade"));
-        itensDisponiveis.add(new Item("Hugão","","peças"));
-        itensDisponiveis.add(new Item("Bruno","","cabelos"));
+        itensDisponiveis.add(new Item("Batata","","caixas", 10.00));
+        itensDisponiveis.add(new Item("Pneu","https://a-static.mlcdn.com.br/618x463/pneu-aro-16-michelin-205-55r16-94v-primacy-4/magazineluiza/221598800/f0d21b60efa44130f54c6e8a0a79da22.jpg","unidade", 5.00));
+        itensDisponiveis.add(new Item("Carne","","peças", 2.76));
+        itensDisponiveis.add(new Item("Pregos","","caixas", 3.15));
+    
+        session.setAttribute("ListaProdutos", itensDisponiveis);
         
         request.setAttribute("Produtos", itensDisponiveis);
+        request.setAttribute("ListaCarrinho", new ArrayList<Item>());
 
         request.getRequestDispatcher("/Produto.jsp").forward(request, response);
     }
 
+        protected void doGet_Alteracao(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        
+            request.getSession();
+        }
     /**
      * Handles the HTTP <code>POST</code> method.
      *
